@@ -342,26 +342,28 @@ cds_market_df['date'] = pd.to_datetime(cds_market_df['date'])
 
 # Filter for Ford Motor Credit
 ford_cds = cds_market_df[cds_market_df['ticker'] == 'F'].copy()
-ford_cds = ford_cds.sort_values(['date', 'tenor'])
+ford_cds = ford_cds.sort_values('date')
 
 print(f"\nFord CDS Data: {len(ford_cds)} observations")
 print(f"Date range: {ford_cds['date'].min()} to {ford_cds['date'].max()}")
-print(f"Available tenors: {sorted(ford_cds['tenor'].unique())}")
 
 # Get latest data
-ford_latest = ford_cds[ford_cds['date'] == ford_cds['date'].max()].copy()
-print(f"\nFord CDS Par Spreads (as of {ford_latest['date'].iloc[0].date()}):")
-print(ford_latest[['tenor', 'par_spread_bps']].to_string(index=False))
+ford_latest = ford_cds[ford_cds['date'] == ford_cds['date'].max()].iloc[0]
+print(f"\nFord CDS Par Spreads (as of {ford_latest['date'].date()}):")
+tenors = ['1y', '2y', '3y', '5y', '7y', '10y']
+for tenor in tenors:
+    col_name = f'par_spread_{tenor}'
+    print(f"  {tenor.upper()}: {ford_latest[col_name]:.2f} bps")
 
 # Plot historical CDS spreads
 fig_ford_hist = go.Figure()
-for tenor in sorted(ford_cds['tenor'].unique()):
-    tenor_data = ford_cds[ford_cds['tenor'] == tenor]
+for tenor in tenors:
+    col_name = f'par_spread_{tenor}'
     fig_ford_hist.add_trace(go.Scatter(
-        x=tenor_data['date'],
-        y=tenor_data['par_spread_bps'],
+        x=ford_cds['date'],
+        y=ford_cds[col_name],
         mode='lines',
-        name=f'{tenor}Y'
+        name=tenor.upper()
     ))
 
 fig_ford_hist.update_layout(
@@ -377,13 +379,13 @@ print("Ford CDS historical plot saved")
 print("\n### Problem 3c: Calibrate the Ford hazard rate curve ###")
 
 # Prepare CDS par spreads for calibration
-ford_as_of = ford_cds[ford_cds['date'] == as_of_date].copy()
-ford_as_of = ford_as_of.sort_values('tenor')
+ford_as_of = ford_cds[ford_cds['date'] == as_of_date].iloc[0]
 
 cds_par_spreads = {}
-for _, row in ford_as_of.iterrows():
-    tenor_years = int(row['tenor'])
-    cds_par_spreads[tenor_years] = row['par_spread_bps']
+tenor_map = {'1y': 1, '2y': 2, '3y': 3, '5y': 5, '7y': 7, '10y': 10}
+for tenor_str, tenor_int in tenor_map.items():
+    col_name = f'par_spread_{tenor_str}'
+    cds_par_spreads[tenor_int] = ford_as_of[col_name]
 
 print(f"\nCDS Par Spreads for calibration:")
 for tenor, spread in cds_par_spreads.items():
@@ -448,7 +450,7 @@ cds_schedule = ql.Schedule(
     False
 )
 
-# Create CDS
+# Create CDS (using simpler constructor)
 ford_cds_instrument = ql.CreditDefaultSwap(
     ql.Protection.Buyer,
     cds_notional,
@@ -458,10 +460,7 @@ ford_cds_instrument = ql.CreditDefaultSwap(
     ql.Actual360(),
     True,
     True,
-    calc_date,
-    ql.Actual360(True),
-    True,
-    ql.Date()
+    calc_date
 )
 
 # Create pricing engine
