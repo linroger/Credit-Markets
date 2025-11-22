@@ -1,0 +1,85 @@
+================================================================================
+FINM 35700 - Credit Markets - PSET 4 Solution
+================================================================================
+Calculation Date: April 19th, 2024
+As of Date: 2024-04-19 00:00:00
+================================================================================
+
+================================================================================
+PROBLEM 1: Pricing risky bonds in the hazard rate model
+================================================================================
+
+--- Problem 1a: Prepare market data and calibrate curves ---
+Loaded bond symbology: 1034 bonds
+Loaded bond market prices for 2024-04-19 00:00:00: 826 bonds
+Loaded govt on-the-run: 21 bonds
+Combined govt OTR data: 21 bonds
+
+Calibrating Treasury yield curve...
+Treasury yield curve calibrated successfully
+Combined SOFR data: 8 swaps
+
+Calibrating SOFR yield curve...
+SOFR yield curve calibrated successfully
+
+IBM CDS Par Spreads (bps): [np.float64(12.0769), np.float64(17.3082), np.float64(24.866), np.float64(39.6501), np.float64(53.9093), np.float64(65.3221)]
+
+Calibrating IBM hazard rate curve...
+IBM hazard rate curve calibrated successfully
+
+IBM Hazard Rates:
+         Date   YearFrac  HazardRateBps  SurvivalProb
+0  2024-04-19   0.000000      19.958587      1.000000
+1  2025-06-20   1.186111      19.958587      0.997635
+2  2026-06-22   2.205556      39.324341      0.993644
+3  2027-06-21   3.216667      70.680488      0.986568
+4  2029-06-20   5.244444     109.832533      0.964839
+5  2031-06-20   7.272222     163.044760      0.933461
+6  2034-06-20  10.316667     168.066969      0.886900
+
+--- Problem 1b: Create IBM risky bond objects ---
+
+Created bond: IBM 3.3 05/15/26
+Cashflows for IBM 3.3 05/15/26:
+           CashFlowDate  CashFlowYearFrac  CashFlowAmount
+9        May 15th, 2024          0.072222            1.65
+10  November 15th, 2024          0.572222            1.65
+11       May 15th, 2025          1.072222            1.65
+12  November 15th, 2025          1.572222            1.65
+13       May 15th, 2026          2.072222            1.65
+14       May 15th, 2026          2.072222          100.00
+
+Created bond: IBM 3.3 01/27/27
+Cashflows for IBM 3.3 01/27/27:
+          CashFlowDate  CashFlowYearFrac  CashFlowAmount
+14     July 27th, 2024          0.272222            1.65
+15  January 27th, 2025          0.772222            1.65
+16     July 27th, 2025          1.272222            1.65
+17  January 27th, 2026          1.772222            1.65
+18     July 27th, 2026          2.272222            1.65
+19  January 27th, 2027          2.772222            1.65
+20  January 27th, 2027          2.772222          100.00
+
+Created bond: IBM 3 1/2 05/15/29
+Cashflows for IBM 3 1/2 05/15/29:
+           CashFlowDate  CashFlowYearFrac  CashFlowAmount
+9        May 15th, 2024          0.072222            1.75
+10  November 15th, 2024          0.572222            1.75
+11       May 15th, 2025          1.072222            1.75
+12  November 15th, 2025          1.572222            1.75
+13       May 15th, 2026          2.072222            1.75
+14  November 15th, 2026          2.572222            1.75
+15       May 15th, 2027          3.072222            1.75
+16  November 15th, 2027          3.572222            1.75
+17       May 15th, 2028          4.072222            1.75
+18  November 15th, 2028          4.572222            1.75
+
+--- Problem 1c: Compute CDS-implied (intrinsic) prices ---
+Traceback (most recent call last):
+  File "/home/user/Credit-Markets/Assignments/PSET 4/PSET_4_Solution.py", line 171, in <module>
+    model_price = bond_dict['bond'].cleanPrice()
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/QuantLib/QuantLib.py", line 25814, in cleanPrice
+    return _QuantLib.Bond_cleanPrice(self, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12

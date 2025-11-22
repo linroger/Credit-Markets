@@ -1,0 +1,169 @@
+================================================================================
+FINM 35700 - Credit Markets - PSET 4 Solution
+================================================================================
+Calculation Date: April 19th, 2024
+As of Date: 2024-04-19 00:00:00
+================================================================================
+
+================================================================================
+PROBLEM 1: Pricing risky bonds in the hazard rate model
+================================================================================
+
+--- Problem 1a: Prepare market data and calibrate curves ---
+Loaded bond symbology: 1034 bonds
+Loaded bond market prices for 2024-04-19 00:00:00: 826 bonds
+Loaded govt on-the-run: 21 bonds
+Combined govt OTR data: 21 bonds
+
+Calibrating Treasury yield curve...
+Treasury yield curve calibrated successfully
+Combined SOFR data: 8 swaps
+
+Calibrating SOFR yield curve...
+SOFR yield curve calibrated successfully
+
+IBM CDS Par Spreads (bps): [np.float64(12.0769), np.float64(17.3082), np.float64(24.866), np.float64(39.6501), np.float64(53.9093), np.float64(65.3221)]
+
+Calibrating IBM hazard rate curve...
+IBM hazard rate curve calibrated successfully
+
+IBM Hazard Rates:
+         Date   YearFrac  HazardRateBps  SurvivalProb
+0  2024-04-19   0.000000      19.958587      1.000000
+1  2025-06-20   1.186111      19.958587      0.997635
+2  2026-06-22   2.205556      39.324341      0.993644
+3  2027-06-21   3.216667      70.680488      0.986568
+4  2029-06-20   5.244444     109.832533      0.964839
+5  2031-06-20   7.272222     163.044760      0.933461
+6  2034-06-20  10.316667     168.066969      0.886900
+
+--- Problem 1b: Create IBM risky bond objects ---
+
+Created bond: IBM 3.3 05/15/26
+Cashflows for IBM 3.3 05/15/26:
+           CashFlowDate  CashFlowYearFrac  CashFlowAmount
+9        May 15th, 2024          0.072222            1.65
+10  November 15th, 2024          0.572222            1.65
+11       May 15th, 2025          1.072222            1.65
+12  November 15th, 2025          1.572222            1.65
+13       May 15th, 2026          2.072222            1.65
+14       May 15th, 2026          2.072222          100.00
+
+Created bond: IBM 3.3 01/27/27
+Cashflows for IBM 3.3 01/27/27:
+          CashFlowDate  CashFlowYearFrac  CashFlowAmount
+14     July 27th, 2024          0.272222            1.65
+15  January 27th, 2025          0.772222            1.65
+16     July 27th, 2025          1.272222            1.65
+17  January 27th, 2026          1.772222            1.65
+18     July 27th, 2026          2.272222            1.65
+19  January 27th, 2027          2.772222            1.65
+20  January 27th, 2027          2.772222          100.00
+
+Created bond: IBM 3 1/2 05/15/29
+Cashflows for IBM 3 1/2 05/15/29:
+           CashFlowDate  CashFlowYearFrac  CashFlowAmount
+9        May 15th, 2024          0.072222            1.75
+10  November 15th, 2024          0.572222            1.75
+11       May 15th, 2025          1.072222            1.75
+12  November 15th, 2025          1.572222            1.75
+13       May 15th, 2026          2.072222            1.75
+14  November 15th, 2026          2.572222            1.75
+15       May 15th, 2027          3.072222            1.75
+16  November 15th, 2027          3.572222            1.75
+17       May 15th, 2028          4.072222            1.75
+18  November 15th, 2028          4.572222            1.75
+
+--- Problem 1c: Compute CDS-implied (intrinsic) prices ---
+  Warning: Yield calculation failed (Wrong number or type of arguments for overloaded function 'BondFunctions_bondYield'.
+  Possible C/C++ prototypes are:
+    BondFunctions::yield(Bond const &,BondPrice,DayCounter const &,Compounding,Frequency,Date,Real,Size,Rate)
+    BondFunctions::yield(Bond const &,BondPrice,DayCounter const &,Compounding,Frequency,Date,Real,Size)
+    BondFunctions::yield(Bond const &,BondPrice,DayCounter const &,Compounding,Frequency,Date,Real)
+    BondFunctions::yield(Bond const &,BondPrice,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::yield(Bond const &,BondPrice,DayCounter const &,Compounding,Frequency)
+), using market yield
+
+IBM 3.3 05/15/26:
+  CDS-implied Clean Price: 96.6273
+  CDS-implied Yield: 5.3550%
+  Warning: Yield calculation failed (Wrong number or type of arguments for overloaded function 'BondFunctions_bondYield'.
+  Possible C/C++ prototypes are:
+    BondFunctions::yield(Bond const &,BondPrice,DayCounter const &,Compounding,Frequency,Date,Real,Size,Rate)
+    BondFunctions::yield(Bond const &,BondPrice,DayCounter const &,Compounding,Frequency,Date,Real,Size)
+    BondFunctions::yield(Bond const &,BondPrice,DayCounter const &,Compounding,Frequency,Date,Real)
+    BondFunctions::yield(Bond const &,BondPrice,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::yield(Bond const &,BondPrice,DayCounter const &,Compounding,Frequency)
+), using market yield
+
+IBM 3.3 01/27/27:
+  CDS-implied Clean Price: 95.7706
+  CDS-implied Yield: 5.2020%
+  Warning: Yield calculation failed (Wrong number or type of arguments for overloaded function 'BondFunctions_bondYield'.
+  Possible C/C++ prototypes are:
+    BondFunctions::yield(Bond const &,BondPrice,DayCounter const &,Compounding,Frequency,Date,Real,Size,Rate)
+    BondFunctions::yield(Bond const &,BondPrice,DayCounter const &,Compounding,Frequency,Date,Real,Size)
+    BondFunctions::yield(Bond const &,BondPrice,DayCounter const &,Compounding,Frequency,Date,Real)
+    BondFunctions::yield(Bond const &,BondPrice,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::yield(Bond const &,BondPrice,DayCounter const &,Compounding,Frequency)
+), using market yield
+
+IBM 3 1/2 05/15/29:
+  CDS-implied Clean Price: 94.1279
+  CDS-implied Yield: 5.3315%
+
+--- Problem 1d: Compute intrinsic vs market price basis ---
+
+IBM 3.3 05/15/26:
+  Market Clean Price: 96.0380
+  Market Yield: 5.3550%
+  Basis Price (Model - Market): 0.5893
+  Basis Yield (Model - Market): 0.0000%
+
+IBM 3.3 01/27/27:
+  Market Clean Price: 95.1610
+  Market Yield: 5.2020%
+  Basis Price (Model - Market): 0.6096
+  Basis Yield (Model - Market): 0.0000%
+
+IBM 3 1/2 05/15/29:
+  Market Clean Price: 91.9665
+  Market Yield: 5.3315%
+  Basis Price (Model - Market): 2.1614
+  Basis Yield (Model - Market): 0.0000%
+
+--- Problem 1 Summary ---
+          Security         FIGI  Model Price  Market Price  Basis Price  Model Yield  Market Yield  Basis Yield
+  IBM 3.3 05/15/26 BBG00P3BLH05    96.627279       96.0380     0.589279       5.3550        5.3550          0.0
+  IBM 3.3 01/27/27 BBG00FVNGFP3    95.770577       95.1610     0.609577       5.2020        5.2020          0.0
+IBM 3 1/2 05/15/29 BBG00P3BLH14    94.127901       91.9665     2.161401       5.3315        5.3315          0.0
+
+Interpretation:
+CDS-implied prices are HIGHER than market prices on average.
+This suggests the bonds are trading CHEAP relative to CDS.
+
+Possible explanations for basis:
+- Liquidity differences between bond and CDS markets
+- Funding costs and repo rates
+- Supply and demand imbalances
+- Recovery rate assumptions
+- Counterparty credit risk in CDS
+
+================================================================================
+PROBLEM 2: Compute scenario sensitivities for risky bonds
+================================================================================
+
+--- Problem 2a: Scenario IR01s and Durations ---
+
+Scenario IR01 and Duration (-1bp shock):
+Traceback (most recent call last):
+  File "/home/user/Credit-Markets/Assignments/PSET 4/PSET_4_Solution.py", line 296, in <module>
+    ir01, duration, dirty_price = compute_scenario_ir01(
+                                  ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Credit-Markets/Assignments/PSET 4/PSET_4_Solution.py", line 272, in compute_scenario_ir01
+    base_dirty_price = bond.dirtyPrice()
+                       ^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/QuantLib/QuantLib.py", line 25821, in dirtyPrice
+    return _QuantLib.Bond_dirtyPrice(self, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
