@@ -167,9 +167,9 @@ aapl_bond.setPricingEngine(pricing_engine)
 
 # Calculate metrics
 aapl_price = aapl_bond.cleanPrice()
-aapl_dv01 = -aapl_bond.cleanPrice() * aapl_bond.duration() / 10000
 aapl_duration = ql.BondFunctions.duration(aapl_bond, aapl_ytm, ql.Actual365Fixed(),
                                           ql.Compounded, ql.Semiannual)
+aapl_dv01 = -aapl_price * aapl_duration / 10000
 aapl_convexity = ql.BondFunctions.convexity(aapl_bond, aapl_ytm, ql.Actual365Fixed(),
                                             ql.Compounded, ql.Semiannual)
 
@@ -296,7 +296,7 @@ sofr_combined = sofr_symbology_df.merge(sofr_market_filtered, on='figi')
 print(f"\nSOFR Swaps Data: {len(sofr_combined)} instruments")
 
 # Calibrate SOFR curve
-sofr_curve = calibrate_sofr_curve_from_frame(calc_date, sofr_combined)
+sofr_curve = calibrate_sofr_curve_from_frame(calc_date, sofr_combined, 'midRate')
 sofr_curve_handle = ql.YieldTermStructureHandle(sofr_curve)
 
 # Get curve details
@@ -314,13 +314,13 @@ fig_sofr = make_subplots(
 )
 
 fig_sofr.add_trace(
-    go.Scatter(x=sofr_curve_df['TTM'], y=sofr_curve_df['Zero_Interest_Rate'] * 100,
+    go.Scatter(x=sofr_curve_df['YearFrac'], y=sofr_curve_df['ZeroRate'],
                mode='lines', name='Zero Rate', line=dict(color='blue', width=2)),
     row=1, col=1
 )
 
 fig_sofr.add_trace(
-    go.Scatter(x=sofr_curve_df['TTM'], y=sofr_curve_df['Discount_Factor'],
+    go.Scatter(x=sofr_curve_df['YearFrac'], y=sofr_curve_df['DiscountFactor'],
                mode='lines', name='Discount Factor', line=dict(color='green', width=2)),
     row=1, col=2
 )
@@ -409,13 +409,13 @@ fig_ford_hz = make_subplots(
 )
 
 fig_ford_hz.add_trace(
-    go.Scatter(x=ford_hazard_df['TTM'], y=ford_hazard_df['Hazard_Rate'] * 100,
+    go.Scatter(x=ford_hazard_df['YearFrac'], y=ford_hazard_df['HazardRateBps'] / 100,
                mode='lines', name='Hazard Rate', line=dict(color='red', width=2)),
     row=1, col=1
 )
 
 fig_ford_hz.add_trace(
-    go.Scatter(x=ford_hazard_df['TTM'], y=ford_hazard_df['Survival_Probability'],
+    go.Scatter(x=ford_hazard_df['YearFrac'], y=ford_hazard_df['SurvivalProb'],
                mode='lines', name='Survival Prob', line=dict(color='orange', width=2)),
     row=1, col=2
 )
@@ -802,10 +802,15 @@ govt_otr_filtered = govt_otr_df[govt_otr_df['date'] == as_of_date].copy()
 # Merge with symbology
 govt_otr_combined = govt_symbology_df.merge(govt_otr_filtered, on='isin', how='inner')
 
+# Merge with market data to get prices
+bond_market_govt = bond_market_df[bond_market_df['class'] == 'Govt'].copy()
+govt_otr_combined = govt_otr_combined.merge(bond_market_govt[['isin', 'date', 'mid_price', 'mid_yield']],
+                                            on=['isin', 'date'], how='inner')
+
 print(f"\nOn-the-run Treasuries: {len(govt_otr_combined)} instruments")
 
 # Calibrate Treasury curve
-tsy_yield_curve = calibrate_yield_curve_from_frame(calc_date, govt_otr_combined)
+tsy_yield_curve = calibrate_yield_curve_from_frame(calc_date, govt_otr_combined, 'mid_price')
 tsy_curve_handle = ql.YieldTermStructureHandle(tsy_yield_curve)
 
 # Get curve details
@@ -822,13 +827,13 @@ fig_tsy = make_subplots(
 )
 
 fig_tsy.add_trace(
-    go.Scatter(x=tsy_curve_df['TTM'], y=tsy_curve_df['Zero_Interest_Rate'] * 100,
+    go.Scatter(x=tsy_curve_df['YearFrac'], y=tsy_curve_df['ZeroRate'],
                mode='lines', name='Zero Rate', line=dict(color='navy', width=2)),
     row=1, col=1
 )
 
 fig_tsy.add_trace(
-    go.Scatter(x=tsy_curve_df['TTM'], y=tsy_curve_df['Discount_Factor'],
+    go.Scatter(x=tsy_curve_df['YearFrac'], y=tsy_curve_df['DiscountFactor'],
                mode='lines', name='Discount Factor', line=dict(color='darkgreen', width=2)),
     row=1, col=2
 )
