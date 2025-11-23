@@ -145,8 +145,8 @@ def calibrate_yield_curve_from_frame(
         bond_helper = ql.BondHelper(tsy_clean_price_handle, bond_object)
         bond_helpers.append(bond_helper)
         
-    yield_curve = ql.PiecewiseLogCubicDiscount(calc_date, bond_helpers, day_count)
-    # yield_curve = ql.PiecewiseFlatForward(calc_date, bond_helpers, day_count)
+    # Piecewise flat forward improves stability for sparse price sets
+    yield_curve = ql.PiecewiseFlatForward(calc_date, bond_helpers, day_count)
     
     yield_curve.enableExtrapolation()
     return yield_curve
@@ -224,8 +224,7 @@ def calibrate_sofr_curve_from_frame(
 def calibrate_cds_hazard_rate_curve(calc_date, sofr_yield_curve_handle, cds_par_spreads_bps, cds_recovery_rate = 0.4):
     '''Calibrate hazard rate curve from CDS Par Spreads'''
     CDS_settle_days = 2
-
-    CDS_day_count = ql.Actual360()
+    CDS_day_count = ql.Actual365Fixed()
 
     # CDS standard tenors: 1Y, 2Y, 3Y, 5Y 7Y and 10Y
     CDS_tenors = [ql.Period(y, ql.Years) for y in [1, 2, 3, 5, 7, 10]]
@@ -281,9 +280,11 @@ def create_nelson_siegel_curve(calc_date, nelson_siegel_params):
     nelson_siegel_surv_prob_dates = [calc_date + ql.Period(T , ql.Years) for T in range(31)]
     nelson_siegel_average_hazard_rates = [nelson_siegel(nelson_siegel_params, T) for T in range(31)]
     nelson_siegel_surv_prob_levels = [np.exp(-T * nelson_siegel_average_hazard_rates[T]) for T in range(31)]
-    
+
     # cap and floor survival probs
     nelson_siegel_surv_prob_levels = [max(min(x,1),1e-8) for x in nelson_siegel_surv_prob_levels]
+    for i in range(1, len(nelson_siegel_surv_prob_levels)):
+        nelson_siegel_surv_prob_levels[i] = min(nelson_siegel_surv_prob_levels[i], nelson_siegel_surv_prob_levels[i-1])
 
     # nelson_siegel_surv_prob_curve
     nelson_siegel_credit_curve = ql.SurvivalProbabilityCurve(nelson_siegel_surv_prob_dates, nelson_siegel_surv_prob_levels, ql.Actual360(), ql.TARGET())
@@ -310,10 +311,11 @@ def calculate_nelson_siegel_model_prices_and_yields(nelson_siegel_params,
     
     for fixed_rate_bond in fixed_rate_bond_objects:
         fixed_rate_bond.setPricingEngine(nelson_siegel_risky_bond_engine)
-        
-        bond_price = fixed_rate_bond.cleanPrice()                
-        bond_yield = fixed_rate_bond.bondYield(bond_price, ql.Thirty360(ql.Thirty360.USA), ql.Compounded, ql.Semiannual) * 100
-        
+
+        bond_price = fixed_rate_bond.cleanPrice()
+        bp = ql.BondPrice(bond_price, ql.BondPrice.Clean)
+        bond_yield = ql.BondFunctions.bondYield(fixed_rate_bond, bp, ql.Thirty360(ql.Thirty360.USA), ql.Compounded, ql.Semiannual, ql.Settings.instance().evaluationDate) * 100
+
         bond_model_prices.append(bond_price)
         bond_model_yields.append(bond_yield)
     
@@ -360,9 +362,12 @@ def create_bonds_and_weights(bond_details, tsy_yield_curve_handle):
         fixed_rate_bond.setPricingEngine(risk_free_bond_engine)
         
         fixed_rate_bond_objects.append(fixed_rate_bond)
-        
-        bond_price = row['midPrice']                
-        bond_yield = fixed_rate_bond.bondYield(bond_price, ql.Thirty360(ql.Thirty360.USA), ql.Compounded, ql.Semiannual) * 100
+
+        bond_price = row['midPrice']
+        bond_yield = row.get('midYield', None)
+        if bond_yield is None or pd.isna(bond_yield):
+            bp = ql.BondPrice(bond_price, ql.BondPrice.Clean)
+            bond_yield = ql.BondFunctions.bondYield(fixed_rate_bond, bp, ql.Thirty360(ql.Thirty360.USA), ql.Compounded, ql.Semiannual, ql.Settings.instance().evaluationDate) * 100
         bond_yield_rate = ql.InterestRate(bond_yield/100, ql.ActualActual(ql.ActualActual.ISMA), ql.Compounded, ql.Semiannual)
         bond_duration = ql.BondFunctions.duration(fixed_rate_bond, bond_yield_rate)
         bond_DV01   = fixed_rate_bond.dirtyPrice() * bond_duration
