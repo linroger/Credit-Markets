@@ -1,0 +1,227 @@
+================================================================================
+PSET 2 Solution - FINM 35700 Credit Markets
+================================================================================
+
+Calculation Date: April 8th, 2024
+Data Directory: /home/user/Credit-Markets/Assignments/PSET 2/data
+
+
+================================================================================
+PROBLEM 1: CONSTRUCTING FIXED RATE BONDS
+================================================================================
+
+Problem 1a: Loading and preparing data...
+Total fixed rate bonds loaded: 776
+Government bonds: 339
+Corporate bonds: 437
+
+Problem 1b & 1c: Bond construction functions defined
+
+Problem 1d: Displaying cashflows for sample bonds...
+
+Government Bond: T 7 1/2 11/15/24
+Future cashflows (first 10):
+       CashFlowDate  CashFlowAmount  CashFlowYearFrac
+     May 15th, 2024            3.75          0.083333
+November 15th, 2024            3.75          0.583333
+November 15th, 2024          100.00          0.583333
+
+Corporate Bond: AAPL 3.85 05/04/43
+Future cashflows (first 10):
+      CashFlowDate  CashFlowAmount  CashFlowYearFrac
+     May 4th, 2024           1.925          0.072222
+November 4th, 2024           1.925          0.572222
+     May 4th, 2025           1.925          1.072222
+November 4th, 2025           1.925          1.572222
+     May 4th, 2026           1.925          2.072222
+November 4th, 2026           1.925          2.572222
+     May 4th, 2027           1.925          3.072222
+November 4th, 2027           1.925          3.572222
+     May 4th, 2028           1.925          4.072222
+November 4th, 2028           1.925          4.572222
+
+================================================================================
+PROBLEM 2: US TREASURY YIELD CURVE CALIBRATION
+================================================================================
+
+Problem 2a: Creating on-the-run treasury bond objects...
+Number of on-the-run treasuries: 7
+
+On-the-run treasuries:
+        security       TTM  midPrice  midYield
+T 4 1/2 03/31/26  1.976728  99.45700    4.7910
+T 4 1/4 03/15/27  2.932238  99.03520    4.6045
+T 4 1/8 03/31/29  4.977413  98.64450    4.4310
+T 4 1/8 03/31/31  6.976044  98.16410    4.4335
+    T 4 02/15/34  9.856263  96.65625    4.4220
+T 4 1/2 02/15/44 19.854894  97.96875    4.6575
+T 4 1/4 02/15/54 29.856263  95.11720    4.5505
+
+Saved: Problem_2a_OTR_Yields.html
+
+Problem 2b: Calibrating yield curves...
+
+Calibrated mid curve details (first 10 points):
+      Date  YearFrac  DiscountFactor  ZeroRate
+2024-04-08       0.0        1.000000     4.883
+2024-10-08       0.5        0.976470     4.877
+2025-04-08       1.0        0.953653     4.860
+2025-10-08       1.5        0.931679     4.831
+2026-04-08       2.0        0.910666     4.790
+2026-10-08       2.5        0.890730     4.737
+2027-04-08       3.0        0.872012     4.671
+2027-10-08       3.5        0.854485     4.596
+2028-04-08       4.0        0.837724     4.526
+2028-10-08       4.5        0.821277     4.473
+
+Problem 2c: Plotting calibrated yield curves...
+Saved: Problem_2c_Calibrated_Yield_Curves.html
+
+Problem 2d: Plotting discount factors...
+Saved: Problem_2d_Discount_Factors.html
+
+================================================================================
+PROBLEM 3: PRICING AND RISK METRICS FOR US TREASURY BONDS
+================================================================================
+
+Problem 3a: Pricing treasuries on calibrated curve...
+
+Price validation (Market vs Calculated):
+        security  midPrice  calc_mid_price    price_diff
+T 4 1/2 03/31/26  99.45700        99.45700  6.963319e-13
+T 4 1/4 03/15/27  99.03520        99.03520 -4.092726e-12
+T 4 1/8 03/31/29  98.64450        98.64450  1.796252e-11
+T 4 1/8 03/31/31  98.16410        98.16410 -3.879563e-12
+    T 4 02/15/34  96.65625        96.65625  8.384404e-13
+T 4 1/2 02/15/44  97.96875        97.96875 -3.319656e-11
+T 4 1/4 02/15/54  95.11720        95.11720  5.599077e-12
+
+Problem 3b: Computing analytical risk metrics (flat yield)...
+
+Analytical risk metrics:
+        security      dv01  duration  convexity
+T 4 1/2 03/31/26  1.881078  1.889246   4.561690
+T 4 1/4 03/15/27  2.729206  2.747783   9.145758
+T 4 1/8 03/31/29  4.430112  4.486374  23.522451
+T 4 1/8 03/31/31  5.928043  6.032678  42.557796
+    T 4 02/15/34  7.799071  8.019639  76.814375
+T 4 1/2 02/15/44 12.657386 12.832377 220.109919
+T 4 1/4 02/15/54 15.311773 15.991792 375.397348
+
+Problem 3c: Computing scenario risk metrics (calibrated curve)...
+
+Scenario risk metrics:
+        security  scen_dv01  scen_duration  scen_convexity
+T 4 1/2 03/31/26   1.923912       1.932266        3.788688
+T 4 1/4 03/15/27   2.743093       2.761765        7.831008
+T 4 1/8 03/31/29   4.508634       4.565894       21.766400
+T 4 1/8 03/31/31   6.037563       6.144130       40.222328
+    T 4 02/15/34   7.917630       8.141551       72.676821
+T 4 1/2 02/15/44  12.914460      13.093005      217.588317
+T 4 1/4 02/15/54  16.048294      16.761024      378.958839
+
+Saved: Problem_3_Treasury_Results.csv
+
+================================================================================
+PROBLEM 4: PRICING AND RISK METRICS FOR CORPORATE BONDS
+================================================================================
+
+Problem 4a: Creating corporate bond objects...
+Number of corporate bonds: 437
+Corporate bonds with market data: 437
+
+Problem 4b: Computing yields and z-spreads...
+Successfully calculated yields/z-spreads for 437/437 bonds
+
+Yields and Z-Spreads (first 10 bonds):
+           security  midYield  calc_yield  calc_zspread
+ AAPL 3.85 05/04/43    5.1005    5.100419     18.533831
+ AAPL 4.45 05/06/44    5.0120    5.011955      9.782833
+ AAPL 3.45 02/09/45    5.1270    5.127134     21.006330
+AAPL 4 3/8 05/13/45    5.1325    5.132465     21.675823
+AAPL 4 1/2 02/23/36    4.7605    4.760493    -15.091590
+ AAPL 4.65 02/23/46    5.1235    5.123411     20.675403
+AAPL 3 1/4 02/23/26    4.9195    4.919410     -0.201608
+ AAPL 2.45 08/04/26    4.8750    4.875242     -3.641648
+ AAPL 3.85 08/04/46    5.1575    5.157592     24.078222
+AAPL 4 1/4 02/09/47    5.0730    5.072795     15.680561
+
+Problem 4c: Validating z-spread computation...
+
+Z-Spread validation:
+
+Bond: AAPL 3.85 05/04/43
+  Market Mid Price: 84.8655
+  Calc Price (w/ Z-Spread): 84.8655
+  Difference: 0.000000
+  Z-Spread (bps): 18.53
+
+Bond: DIS 3 3/8 11/15/26
+  Market Mid Price: 96.0200
+  Calc Price (w/ Z-Spread): 96.0200
+  Difference: 0.000000
+  Z-Spread (bps): 11.11
+
+Bond: F 4.271 01/09/27
+  Market Mid Price: 95.8520
+  Calc Price (w/ Z-Spread): 95.8520
+  Difference: 0.000000
+  Z-Spread (bps): 99.51
+
+Problem 4d: Computing duration and convexity for corporate bonds...
+
+Duration and Convexity (first 10 bonds):
+           security  calc_dv01  calc_duration  calc_convexity
+ AAPL 3.85 05/04/43  11.622848      12.721344      214.213721
+ AAPL 4.45 05/06/44  12.599341      12.715945      219.881997
+ AAPL 3.45 02/09/45  11.724114      13.889088      254.013942
+AAPL 4 3/8 05/13/45  12.876346      13.140231      236.687789
+AAPL 4 1/2 02/23/36   9.124047       9.077989      101.380206
+ AAPL 4.65 02/23/46  13.455708      13.413012      246.852810
+AAPL 3 1/4 02/23/26   1.761184       1.804691        4.190392
+ AAPL 2.45 08/04/26   2.130008       2.230233        6.149242
+ AAPL 3.85 08/04/46  12.612355      14.090592      269.013687
+AAPL 4 1/4 02/09/47  13.289326      13.969876      268.495256
+
+Saved: Problem_4_Corporate_Results.csv
+Saved: Problem_4_Corporate_ZSpreads.html
+Saved: Problem_4_Corporate_Duration.html
+
+================================================================================
+SOLUTION SUMMARY
+================================================================================
+
+Problems Solved:
+  ✓ Problem 1: Constructing fixed rate bonds
+    - Loaded and prepared symbology and market data
+    - Created bond construction functions
+    - Generated cashflow schedules
+
+  ✓ Problem 2: US Treasury yield curve calibration
+    - Created on-the-run treasury bond objects
+    - Calibrated bid, ask, and mid yield curves
+    - Plotted yield curves and discount factors
+
+  ✓ Problem 3: Pricing and risk metrics for US Treasury bonds
+    - Priced treasuries on calibrated curve
+    - Computed analytical DV01, duration, convexity
+    - Computed scenario-based risk metrics
+
+  ✓ Problem 4: Pricing and risk metrics for corporate bonds
+    - Created corporate bond objects
+    - Computed yields and z-spreads
+    - Validated z-spread computation
+    - Computed duration and convexity
+
+Output Files Generated:
+  - Problem_2a_OTR_Yields.html
+  - Problem_2c_Calibrated_Yield_Curves.html
+  - Problem_2d_Discount_Factors.html
+  - Problem_3_Treasury_Results.csv
+  - Problem_4_Corporate_Results.csv
+  - Problem_4_Corporate_ZSpreads.html
+  - Problem_4_Corporate_Duration.html
+
+================================================================================
+PSET 2 COMPLETE!
+================================================================================

@@ -1,0 +1,291 @@
+================================================================================
+CREDIT MARKETS FINAL EXAM - COMPLETE SOLUTION
+================================================================================
+Calculation Date: May 3rd, 2024
+================================================================================
+
+================================================================================
+PROBLEM 1: Overall Understanding of Credit Models (40 points)
+================================================================================
+
+### Problem 1a: Fixed rate bond prices in the hazard rate model ###
+
+For a fixed rate bond in the hazard rate model:
+Formula: BondPV = Σ(c/2 * e^(-k*y/2)) + e^(-T*y) with default adjustment
+
+1. Fixed rate bond price is decreasing in interest rate: TRUE
+2. Fixed rate bond price is decreasing in hazard rate: TRUE
+3. Fixed rate bond price is decreasing in expected recovery rate: FALSE
+4. Fixed rate bond price is decreasing in coupon: FALSE
+5. Fixed rate bond price is decreasing in bond maturity: FALSE (generally)
+
+### Problem 1b: Fixed rate bond yields in the hazard rate model ###
+
+1. Fixed rate bond yield is decreasing in interest rate: FALSE
+2. Fixed rate bond yield is decreasing in hazard rate: FALSE
+3. Fixed rate bond yield is decreasing in expected recovery rate: TRUE
+4. Fixed rate bond yield is independent of the coupon: TRUE
+5. Fixed rate bond yield is decreasing in bond maturity: FALSE (generally)
+
+### Problem 1c: Equity and equity volatility in Merton Structural Credit Model ###
+
+Equity as a call option on assets with liabilities as strike
+
+1. Equity value is decreasing with company assets: FALSE
+2. Equity volatility is decreasing with company assets: TRUE
+3. Equity value is decreasing with assets volatility: FALSE
+4. Equity value is decreasing with company liabilities: TRUE
+5. Equity volatility is decreasing with company liabilities: FALSE
+
+### Problem 1d: Yield and expected recovery rate in Merton Structural Credit Model ###
+
+1. Yield is decreasing with company liabilities: FALSE
+2. Expected recovery rate is decreasing with company liabilities: TRUE
+3. Yield is decreasing with assets volatility: FALSE
+4. Credit spread is decreasing with asset values: TRUE
+5. Credit spread is decreasing with assets volatility: FALSE
+
+================================================================================
+Problem 1 Complete!
+================================================================================
+
+================================================================================
+PROBLEM 2: Risk and Scenario Analysis for AAPL Bond (20 points)
+================================================================================
+
+### Problem 2a: Create the AAPL fixed-rate corporate bond object ###
+
+Loaded bond symbology: 1045 bonds
+
+AAPL Bond Details:
+Security: AAPL 4.45 05/06/44
+ISIN: US037833AT77
+FIGI: BBG006F8VWJ7
+Coupon: 4.45%
+Maturity: 2044-05-06 00:00:00
+
+AAPL Bond Cashflows:
+          CashFlowDate  CashFlowYearFrac  CashFlowAmount
+19       May 6th, 2024          0.008333           2.225
+20  November 6th, 2024          0.508333           2.225
+21       May 6th, 2025          1.008333           2.225
+22  November 6th, 2025          1.508333           2.225
+23       May 6th, 2026          2.008333           2.225
+24  November 6th, 2026          2.508333           2.225
+25       May 6th, 2027          3.008333           2.225
+26  November 6th, 2027          3.508333           2.225
+27       May 6th, 2028          4.008333           2.225
+28  November 6th, 2028          4.508333           2.225
+29       May 6th, 2029          5.008333           2.225
+30  November 6th, 2029          5.508333           2.225
+31       May 6th, 2030          6.008333           2.225
+32  November 6th, 2030          6.508333           2.225
+33       May 6th, 2031          7.008333           2.225
+34  November 6th, 2031          7.508333           2.225
+35       May 6th, 2032          8.008333           2.225
+36  November 6th, 2032          8.508333           2.225
+37       May 6th, 2033          9.008333           2.225
+38  November 6th, 2033          9.508333           2.225
+39       May 6th, 2034         10.008333           2.225
+40  November 6th, 2034         10.508333           2.225
+41       May 6th, 2035         11.008333           2.225
+42  November 6th, 2035         11.508333           2.225
+43       May 6th, 2036         12.008333           2.225
+44  November 6th, 2036         12.508333           2.225
+45       May 6th, 2037         13.008333           2.225
+46  November 6th, 2037         13.508333           2.225
+47       May 6th, 2038         14.008333           2.225
+48  November 6th, 2038         14.508333           2.225
+49       May 6th, 2039         15.008333           2.225
+50  November 6th, 2039         15.508333           2.225
+51       May 6th, 2040         16.008333           2.225
+52  November 6th, 2040         16.508333           2.225
+53       May 6th, 2041         17.008333           2.225
+54  November 6th, 2041         17.508333           2.225
+55       May 6th, 2042         18.008333           2.225
+56  November 6th, 2042         18.508333           2.225
+57       May 6th, 2043         19.008333           2.225
+58  November 6th, 2043         19.508333           2.225
+59       May 6th, 2044         20.008333           2.225
+60       May 6th, 2044         20.008333         100.000
+
+### Problem 2b: Compute bond price, DV01, duration and convexity ###
+
+AAPL Bond Market Data (as of 2024-05-03):
+Mid Yield: 5.1175%
+
+Bond Metrics (Analytic Method):
+Price: 90.8899
+DV01: -0.116333
+Duration: 12.7994 years
+Convexity: 217.8942
+
+### Problem 2c: Compute and plot scenario bond prices ###
+
+Scenario prices plot saved to aapl_scenario_prices.html
+
+### Problem 2d: Compute and plot scenario durations and convexities ###
+Scenario duration and convexity plots saved
+
+================================================================================
+Problem 2 Complete!
+================================================================================
+
+================================================================================
+PROBLEM 3: CDS Calibration and Pricing (20 points)
+================================================================================
+
+### Problem 3a: Calibrate the US SOFR yield curve ###
+
+SOFR Swaps Data: 8 instruments
+
+SOFR Curve calibrated successfully
+Sample zero rates (first 5 tenors):
+         Date  YearFrac  DiscountFactor  ZeroRate
+0  2024-06-03     0.075           0.996     5.144
+1  2024-07-03     0.158           0.992     5.144
+2  2024-08-03     0.244           0.988     5.144
+3  2024-09-03     0.331           0.984     5.144
+4  2024-10-03     0.414           0.979     5.144
+SOFR curve plots saved
+
+### Problem 3b: Load and explore CDS market data for Ford Motor Credit ###
+
+Ford CDS Data: 91 observations
+Date range: 2024-01-02 00:00:00 to 2024-05-03 00:00:00
+
+Ford CDS Par Spreads (as of 2024-05-03):
+  1Y: 27.39 bps
+  2Y: 56.38 bps
+  3Y: 87.17 bps
+  5Y: 152.47 bps
+  7Y: 193.74 bps
+  10Y: 224.84 bps
+Ford CDS historical plot saved
+
+### Problem 3c: Calibrate the Ford hazard rate curve ###
+
+CDS Par Spreads for calibration:
+  1Y: 27.39 bps
+  2Y: 56.38 bps
+  3Y: 87.17 bps
+  5Y: 152.47 bps
+  7Y: 193.74 bps
+  10Y: 224.84 bps
+
+Ford Hazard Rate Curve calibrated successfully
+Sample hazard rates (first 5 tenors):
+         Date  YearFrac  HazardRateBps  SurvivalProb
+0  2024-05-03  0.000000       1.652728      1.000000
+1  2025-06-20  1.147222       1.652728      0.999810
+2  2026-06-22  2.166667       5.272240      0.999273
+3  2027-06-21  3.177778       8.761671      0.998388
+4  2029-06-20  5.205556      14.055315      0.995547
+Ford hazard rate curve plots saved
+
+### Problem 3d: CDS Valuation ###
+
+CDS Metrics (100 bps coupon, maturity 2029-06-20):
+CDS PV: $-438,958.28
+Premium Leg PV: $-474,540.27
+Default Leg PV: $23,083.74
+Par Spread: 5.00 bps
+Survival Probability to Maturity (5.13 years): 0.9955
+
+================================================================================
+Problem 3 Complete!
+================================================================================
+
+================================================================================
+PROBLEM 4: Derivation of Bond PVs and DV01s in sympy (25 points)
+================================================================================
+
+### Symbolic Variables Defined ###
+T = bond maturity (years)
+c = semi-annual coupon rate
+y = yield
+
+### Generic Fixed Rate Bond PV Formula ###
+(1 - exp(-T*y))*(c/2 - exp(y/2) + 1)/(exp(y/2) - 1) + 1
+
+### Problem 4a: Zero Coupon Bond PV ###
+
+Zero Coupon Bond PV (c=0):
+exp(-T*y)
+ -T⋅y
+ℯ    
+Zero Coupon PV surface plotted
+
+### Problem 4b: Zero Coupon Bond DV01 ###
+
+Zero Coupon Bond DV01 (derivative w.r.t. y):
+-T*exp(-T*y)
+    -T⋅y
+-T⋅ℯ    
+Zero Coupon DV01 surface plotted
+
+### Problem 4c: Interest Only Bond PV ###
+
+Interest Only Bond PV (Generic - Zero Coupon):
+c*(1 - exp(T*y))*exp(-T*y)/(2*(1 - exp(y/2)))
+  ⎛     T⋅y⎞  -T⋅y
+c⋅⎝1 - ℯ   ⎠⋅ℯ    
+──────────────────
+      ⎛     y⎞    
+      ⎜     ─⎟    
+      ⎜     2⎟    
+    2⋅⎝1 - ℯ ⎠    
+Interest Only PV surface plotted
+
+### Problem 4d: Interest Only Bond DV01 ###
+
+Interest Only Bond DV01 (derivative w.r.t. y):
+c*(2*T*exp(y/2) - 2*T + exp(y/2) - exp(T*y + y/2))*exp(-T*y)/(4*(-2*exp(y/2) + exp(y) + 1))
+  ⎛     y          y          y⎞      
+  ⎜     ─          ─    T⋅y + ─⎟      
+  ⎜     2          2          2⎟  -T⋅y
+c⋅⎝2⋅T⋅ℯ  - 2⋅T + ℯ  - ℯ       ⎠⋅ℯ    
+──────────────────────────────────────
+           ⎛     y         ⎞          
+           ⎜     ─         ⎟          
+           ⎜     2    y    ⎟          
+         4⋅⎝- 2⋅ℯ  + ℯ  + 1⎠          
+Interest Only DV01 surface plotted
+
+### Problem 4e: Coupon c* where Interest Only PV = Zero Coupon PV ###
+
+Solving Interest_Only_PV(c*, y, T) = Zero_Coupon_PV(y, T)
+Equivalently: Interest_Only_PV(c*, y, T) = 0
+
+Solution for c*:
+No solution found
+
+================================================================================
+Problem 4 Complete!
+================================================================================
+
+================================================================================
+PROBLEM 5: LQD ETF Basket Analysis (25 points)
+================================================================================
+
+### Problem 5a: Load and explore LQD basket composition ###
+
+LQD Basket Composition: 2461 bonds
+LQD Bond Symbology: 2461 bonds
+
+Number of corporate bonds in LQD basket: 2461
+Average face notional per bond: $10,646,601.79
+Median face notional per bond: $9,177,000.00
+Traceback (most recent call last):
+  File "/home/user/Credit-Markets/UChicago_FINM_35700_CreditMarkets_Spring2024_FinalExam/Credit_Markets_Final_Exam_Complete_Solution.py", line 643, in <module>
+    ticker_notionals = lqd_basket_df.groupby('ticker')['face_notional'].sum()
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/pandas/core/frame.py", line 9210, in groupby
+    return DataFrameGroupBy(
+           ^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/pandas/core/groupby/groupby.py", line 1331, in __init__
+    grouper, exclusions, obj = get_grouper(
+                               ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/pandas/core/groupby/grouper.py", line 1043, in get_grouper
+    raise KeyError(gpr)
+KeyError: 'ticker'

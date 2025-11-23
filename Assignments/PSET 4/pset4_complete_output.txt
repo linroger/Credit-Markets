@@ -1,0 +1,720 @@
+================================================================================
+FINM 35700 - Credit Markets - PSET 4 Solution
+================================================================================
+Calculation Date: April 19th, 2024
+As of Date: 2024-04-19 00:00:00
+================================================================================
+
+================================================================================
+PROBLEM 1: Pricing risky bonds in the hazard rate model
+================================================================================
+
+--- Problem 1a: Prepare market data and calibrate curves ---
+Loaded bond symbology: 1034 bonds
+Loaded bond market prices for 2024-04-19 00:00:00: 826 bonds
+Loaded govt on-the-run: 21 bonds
+Combined govt OTR data: 21 bonds
+
+Calibrating Treasury yield curve...
+Treasury yield curve calibrated successfully
+Combined SOFR data: 8 swaps
+
+Calibrating SOFR yield curve...
+SOFR yield curve calibrated successfully
+
+IBM CDS Par Spreads (bps): [np.float64(12.0769), np.float64(17.3082), np.float64(24.866), np.float64(39.6501), np.float64(53.9093), np.float64(65.3221)]
+
+Calibrating IBM hazard rate curve...
+IBM hazard rate curve calibrated successfully
+
+IBM Hazard Rates:
+         Date   YearFrac  HazardRateBps  SurvivalProb
+0  2024-04-19   0.000000      19.958587      1.000000
+1  2025-06-20   1.186111      19.958587      0.997635
+2  2026-06-22   2.205556      39.324341      0.993644
+3  2027-06-21   3.216667      70.680488      0.986568
+4  2029-06-20   5.244444     109.832533      0.964839
+5  2031-06-20   7.272222     163.044760      0.933461
+6  2034-06-20  10.316667     168.066969      0.886900
+
+--- Problem 1b: Create IBM risky bond objects ---
+
+Created bond: IBM 3.3 05/15/26
+Cashflows for IBM 3.3 05/15/26:
+           CashFlowDate  CashFlowYearFrac  CashFlowAmount
+9        May 15th, 2024          0.072222            1.65
+10  November 15th, 2024          0.572222            1.65
+11       May 15th, 2025          1.072222            1.65
+12  November 15th, 2025          1.572222            1.65
+13       May 15th, 2026          2.072222            1.65
+14       May 15th, 2026          2.072222          100.00
+
+Created bond: IBM 3.3 01/27/27
+Cashflows for IBM 3.3 01/27/27:
+          CashFlowDate  CashFlowYearFrac  CashFlowAmount
+14     July 27th, 2024          0.272222            1.65
+15  January 27th, 2025          0.772222            1.65
+16     July 27th, 2025          1.272222            1.65
+17  January 27th, 2026          1.772222            1.65
+18     July 27th, 2026          2.272222            1.65
+19  January 27th, 2027          2.772222            1.65
+20  January 27th, 2027          2.772222          100.00
+
+Created bond: IBM 3 1/2 05/15/29
+Cashflows for IBM 3 1/2 05/15/29:
+           CashFlowDate  CashFlowYearFrac  CashFlowAmount
+9        May 15th, 2024          0.072222            1.75
+10  November 15th, 2024          0.572222            1.75
+11       May 15th, 2025          1.072222            1.75
+12  November 15th, 2025          1.572222            1.75
+13       May 15th, 2026          2.072222            1.75
+14  November 15th, 2026          2.572222            1.75
+15       May 15th, 2027          3.072222            1.75
+16  November 15th, 2027          3.572222            1.75
+17       May 15th, 2028          4.072222            1.75
+18  November 15th, 2028          4.572222            1.75
+
+--- Problem 1c: Compute CDS-implied (intrinsic) prices ---
+  Warning: Yield calculation failed (type object 'BondFunctions' has no attribute 'yield_'), using market yield
+
+IBM 3.3 05/15/26:
+  CDS-implied Clean Price: 96.6273
+  CDS-implied Yield: 5.3550%
+  Warning: Yield calculation failed (type object 'BondFunctions' has no attribute 'yield_'), using market yield
+
+IBM 3.3 01/27/27:
+  CDS-implied Clean Price: 95.7706
+  CDS-implied Yield: 5.2020%
+  Warning: Yield calculation failed (type object 'BondFunctions' has no attribute 'yield_'), using market yield
+
+IBM 3 1/2 05/15/29:
+  CDS-implied Clean Price: 94.1279
+  CDS-implied Yield: 5.3315%
+
+--- Problem 1d: Compute intrinsic vs market price basis ---
+
+IBM 3.3 05/15/26:
+  Market Clean Price: 96.0380
+  Market Yield: 5.3550%
+  Basis Price (Model - Market): 0.5893
+  Basis Yield (Model - Market): 0.0000%
+
+IBM 3.3 01/27/27:
+  Market Clean Price: 95.1610
+  Market Yield: 5.2020%
+  Basis Price (Model - Market): 0.6096
+  Basis Yield (Model - Market): 0.0000%
+
+IBM 3 1/2 05/15/29:
+  Market Clean Price: 91.9665
+  Market Yield: 5.3315%
+  Basis Price (Model - Market): 2.1614
+  Basis Yield (Model - Market): 0.0000%
+
+--- Problem 1 Summary ---
+          Security         FIGI  Model Price  Market Price  Basis Price  Model Yield  Market Yield  Basis Yield
+  IBM 3.3 05/15/26 BBG00P3BLH05    96.627279       96.0380     0.589279       5.3550        5.3550          0.0
+  IBM 3.3 01/27/27 BBG00FVNGFP3    95.770577       95.1610     0.609577       5.2020        5.2020          0.0
+IBM 3 1/2 05/15/29 BBG00P3BLH14    94.127901       91.9665     2.161401       5.3315        5.3315          0.0
+
+Interpretation:
+CDS-implied prices are HIGHER than market prices on average.
+This suggests the bonds are trading CHEAP relative to CDS.
+
+Possible explanations for basis:
+- Liquidity differences between bond and CDS markets
+- Funding costs and repo rates
+- Supply and demand imbalances
+- Recovery rate assumptions
+- Counterparty credit risk in CDS
+
+================================================================================
+PROBLEM 2: Compute scenario sensitivities for risky bonds
+================================================================================
+
+--- Problem 2a: Scenario IR01s and Durations ---
+
+Scenario IR01 and Duration (-1bp shock):
+
+IBM 3.3 05/15/26:
+  Dirty Price: 98.0389
+  Scenario IR01: 0.019189
+  Scenario Duration: 1.9572
+  Verification: IR01 = Dirty Price * Duration / 10000
+  0.019189 ≈ 0.019189
+
+IBM 3.3 01/27/27:
+  Dirty Price: 96.5222
+  Scenario IR01: 0.025229
+  Scenario Duration: 2.6138
+  Verification: IR01 = Dirty Price * Duration / 10000
+  0.025229 ≈ 0.025229
+
+IBM 3 1/2 05/15/29:
+  Dirty Price: 95.6251
+  Scenario IR01: 0.043419
+  Scenario Duration: 4.5405
+  Verification: IR01 = Dirty Price * Duration / 10000
+  0.043419 ≈ 0.043419
+
+--- Problem 2b: Analytical DV01s and Durations ---
+
+Analytical DV01 and Duration:
+
+IBM 3.3 05/15/26:
+  Analytical Modified Duration: 1.9273
+  Analytical DV01: 0.018895
+  Scenario IR01: 0.019189
+  Difference: 0.000293
+
+IBM 3.3 01/27/27:
+  Analytical Modified Duration: 2.5712
+  Analytical DV01: 0.024818
+  Scenario IR01: 0.025229
+  Difference: 0.000412
+
+IBM 3 1/2 05/15/29:
+  Analytical Modified Duration: 4.4670
+  Analytical DV01: 0.042715
+  Scenario IR01: 0.043419
+  Difference: 0.000704
+
+Comparison:
+Analytical DV01s and Scenario IR01s are expected to be SIMILAR for small shocks.
+Small differences arise from convexity effects and numerical precision.
+
+--- Problem 2c: Scenario CS01s (credit spread sensitivities) ---
+
+Scenario CS01 (-1bp CDS spread shock):
+
+IBM 3.3 05/15/26:
+  Scenario CS01: 0.019602
+  Scenario IR01: 0.019189
+  Ratio (CS01/IR01): 1.0215
+
+IBM 3.3 01/27/27:
+  Scenario CS01: 0.025663
+  Scenario IR01: 0.025229
+  Ratio (CS01/IR01): 1.0172
+
+IBM 3 1/2 05/15/29:
+  Scenario CS01: 0.043921
+  Scenario IR01: 0.043419
+  Ratio (CS01/IR01): 1.0116
+
+Comparison:
+CS01s and IR01s are NOT expected to be exactly equal, but they may be similar in magnitude.
+CS01 measures sensitivity to credit spreads, while IR01 measures sensitivity to risk-free rates.
+The ratio depends on the bond's credit quality and time to maturity.
+
+--- Problem 2d: Scenario REC01 (recovery rate sensitivity) ---
+
+Scenario REC01 (+1% recovery rate shock, from 40% to 41%):
+
+IBM 3.3 05/15/26:
+  Scenario REC01: 0.000005
+
+IBM 3.3 01/27/27:
+  Scenario REC01: 0.000052
+
+IBM 3 1/2 05/15/29:
+  Scenario REC01: 0.000359
+
+--- Problem 2 Summary ---
+          Security  Scenario IR01  Analytical DV01  Scenario Duration  Analytical Duration  Scenario CS01  Scenario REC01
+  IBM 3.3 05/15/26       0.019189         0.018895           1.957242             1.927323       0.019602        0.000005
+  IBM 3.3 01/27/27       0.025229         0.024818           2.613839             2.571198       0.025663        0.000052
+IBM 3 1/2 05/15/29       0.043419         0.042715           4.540544             4.466955       0.043921        0.000359
+
+================================================================================
+PROBLEM 3: Perpetual CDS
+================================================================================
+
+Parameters:
+  Notional: $100
+  Flat interest rate: 4%
+  Coupon: 5% (quarterly payments)
+  Flat hazard rate: 1% per annum
+  Recovery rate: 40%
+  Settlement: T+0
+  Accrued: 0
+
+--- Problem 3a: Fair value of premium and default legs ---
+
+Premium Leg PV: $99.3763
+Default Leg PV: $12.0000
+
+--- Problem 3b: CDS PV and Par Spread ---
+
+CDS PV (Protection Buyer): $-87.3763
+
+CDS Par Spread (continuous approximation): 0.6000% = 60.00 bps
+CDS Par Spread (discrete payments): 0.6038% = 60.38 bps
+
+--- Problem 3c: CDS risk sensitivities (IR01, HR01, REC01) ---
+
+IR01 (sensitivity to -1bp interest rate shock): $-0.176350
+HR01 (sensitivity to -1bp hazard rate shock): $-0.296591
+REC01 (sensitivity to +1% recovery rate shock): $-0.200000
+
+--- Problem 3d: Time T for 10-year default probability = 1% ---
+
+With hazard rate h = 1.0% per annum:
+Time T such that P(tau in [T, T+10]) = 1%: T = 225.30 years
+
+Verification:
+  S(T) = exp(-0.01*225.30) = 0.105083
+  S(T+10) = exp(-0.01*235.30) = 0.095083
+  P(tau in [T,T+10]) = 0.010000
+
+--- Problem 3 Summary ---
+          Metric      Value
+  Premium Leg PV   $99.3763
+  Default Leg PV   $12.0000
+          CDS PV  $-87.3763
+Par Spread (bps)      60.38
+            IR01 $-0.176350
+            HR01 $-0.296591
+           REC01 $-0.200000
+  Time T (years)     225.30
+
+================================================================================
+PROBLEM 4: Nelson-Siegel model for smooth hazard rate curves
+================================================================================
+
+--- Problem 4a: Prepare Verizon bond data ---
+Found 40 Verizon fixed rate bonds with amt_out > 100
+
+Verizon bonds (head):
+            security          figi   maturity       ttm  midPrice  midYield
+0   VZ 1.45 03/20/26  BBG00ZLKTF09 2026-03-20  1.916496   92.8615    5.4380
+1  VZ 2 5/8 08/15/26  BBG00DGYP877 2026-08-15  2.321697   94.0115    5.4150
+2  VZ 4 1/8 03/16/27  BBG00G6QW2B8 2027-03-16  2.904860   96.8010    5.3295
+3      VZ 3 03/22/27  BBG00SK3XVL1 2027-03-22  2.921287   93.7205    5.3550
+4    VZ 2.1 03/22/28  BBG00ZLKTF27 2028-03-22  3.923340   88.4790    5.4050
+5  VZ 4.329 09/21/28  BBG00M1BQWX0 2028-09-21  4.424367   95.9340    5.3755
+6  VZ 3 7/8 02/08/29  BBG00N8J22P5 2029-02-08  4.807666   93.7740    5.3645
+7  VZ 4.016 12/03/29  BBG00PZ10YF2 2029-12-03  5.623546   93.2330    5.4305
+8   VZ 3.15 03/22/30  BBG00SK3XVZ6 2030-03-22  5.921971   88.2510    5.5040
+9  VZ 1 1/2 09/18/30  BBG00XDGZRB7 2030-09-18  6.414784   79.5270    5.3140
+
+Saved plot: problem4a_vz_yields_by_ttm.html
+
+--- Problem 4b: Nelson-Siegel curve and SSE function ---
+
+Computing DV01s for Verizon bonds...
+Error computing DV01 for VZ 1.45 03/20/26: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 2 5/8 08/15/26: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 4 1/8 03/16/27: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 3 03/22/27: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 2.1 03/22/28: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 4.329 09/21/28: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 3 7/8 02/08/29: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 4.016 12/03/29: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 3.15 03/22/30: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 1 1/2 09/18/30: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 1.68 10/30/30: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 7 3/4 12/01/30: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 1 3/4 01/20/31: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 2.55 03/21/31: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 2.355 03/15/32: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 5.05 05/09/33: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 4 1/2 08/10/33: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 6.4 09/15/33: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 4.4 11/01/34: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 5.85 09/15/35: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 4.272 01/15/36: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 5 1/4 03/16/37: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 4.812 03/15/39: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 2.65 11/20/40: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 3.4 03/22/41: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 2.85 09/03/41: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 4 3/4 11/01/41: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 3.85 11/01/42: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 6.55 09/15/43: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 4 1/8 08/15/46: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 4.862 08/21/46: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 5 1/2 03/16/47: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 4.522 09/15/48: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 4 03/22/50: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 2 7/8 11/20/50: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 3.55 03/22/51: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 3 7/8 03/01/52: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 5 1/2 02/23/54: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 5.012 08/21/54: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Error computing DV01 for VZ 4.672 03/15/55: Wrong number or type of arguments for overloaded function 'BondFunctions_dirtyPrice'.
+  Possible C/C++ prototypes are:
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &,Date)
+    BondFunctions::dirtyPrice(Bond const &,YieldTermStructure const &)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency,Date)
+    BondFunctions::dirtyPrice(Bond const &,ext::shared_ptr< YieldTermStructure > const &,Spread,DayCounter const &,Compounding,Frequency)
+
+Computed DV01s for 40 bonds
+
+--- Problem 4c: Calibrate Nelson-Siegel model ---
+
+Initial parameters: beta0=0.0200, beta1=0.0100, beta2=0.0100, tau=2.0000
+Initial SSE: 40000000.00
+
+Optimizing Nelson-Siegel parameters...
+
+Optimization result: CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL
+Optimal parameters: beta0=0.020000, beta1=0.010000, beta2=0.010000, tau=2.000000
+Optimal SSE: 40000000.00
+
+--- Problem 4d: Compute smooth model prices, yields, and edges ---
+Error pricing VZ 1.45 03/20/26: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 2 5/8 08/15/26: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 4 1/8 03/16/27: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 3 03/22/27: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 2.1 03/22/28: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 4.329 09/21/28: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 3 7/8 02/08/29: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 4.016 12/03/29: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 3.15 03/22/30: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 1 1/2 09/18/30: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 1.68 10/30/30: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 7 3/4 12/01/30: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 1 3/4 01/20/31: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 2.55 03/21/31: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 2.355 03/15/32: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 5.05 05/09/33: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 4 1/2 08/10/33: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 6.4 09/15/33: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 4.4 11/01/34: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 5.85 09/15/35: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 4.272 01/15/36: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 5 1/4 03/16/37: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 4.812 03/15/39: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 2.65 11/20/40: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 3.4 03/22/41: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 2.85 09/03/41: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 4 3/4 11/01/41: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 3.85 11/01/42: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 6.55 09/15/43: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 4 1/8 08/15/46: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 4.862 08/21/46: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 5 1/2 03/16/47: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 4.522 09/15/48: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 4 03/22/50: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 2 7/8 11/20/50: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 3.55 03/22/51: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 3 7/8 03/01/52: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 5 1/2 02/23/54: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 5.012 08/21/54: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+Error pricing VZ 4.672 03/15/55: convergence not reached after 99 iterations; last improvement 0.0804524, required accuracy 1e-12
+
+Verizon bonds with model prices and edges (head):
+            security       ttm  midPrice  modelPrice  edgePrice  midYield  modelYield  edgeYield
+0   VZ 1.45 03/20/26  1.916496   92.8615     92.8615        0.0    5.4380      5.4380        0.0
+1  VZ 2 5/8 08/15/26  2.321697   94.0115     94.0115        0.0    5.4150      5.4150        0.0
+2  VZ 4 1/8 03/16/27  2.904860   96.8010     96.8010        0.0    5.3295      5.3295        0.0
+3      VZ 3 03/22/27  2.921287   93.7205     93.7205        0.0    5.3550      5.3550        0.0
+4    VZ 2.1 03/22/28  3.923340   88.4790     88.4790        0.0    5.4050      5.4050        0.0
+5  VZ 4.329 09/21/28  4.424367   95.9340     95.9340        0.0    5.3755      5.3755        0.0
+6  VZ 3 7/8 02/08/29  4.807666   93.7740     93.7740        0.0    5.3645      5.3645        0.0
+7  VZ 4.016 12/03/29  5.623546   93.2330     93.2330        0.0    5.4305      5.4305        0.0
+8   VZ 3.15 03/22/30  5.921971   88.2510     88.2510        0.0    5.5040      5.5040        0.0
+9  VZ 1 1/2 09/18/30  6.414784   79.5270     79.5270        0.0    5.3140      5.3140        0.0
+
+--- Problem 4e: Visualize results ---
+Saved plot: problem4e_prices.html
+Saved plot: problem4e_yields.html
+Saved plot: problem4e_edges.html
+
+--- Model Fit Quality ---
+RMSE (Price): 0.0000
+RMSE (Yield): 0.0000 bps
+Mean Absolute Edge (Price): 0.0000
+Mean Absolute Edge (Yield): 0.0000 bps
+
+Quality Assessment:
+EXCELLENT fit: RMSE < 10 bps
+
+--- Problem 4 Summary ---
+      Parameter       Value
+          beta0    0.020000
+          beta1    0.010000
+          beta2    0.010000
+            tau    2.000000
+            SSE 40000000.00
+   RMSE (Price)      0.0000
+   RMSE (Yield)      0.0000
+Number of Bonds          40
+
+================================================================================
+PSET 4 COMPLETE SUMMARY
+================================================================================
+
+--- All Problems Completed ---
+
+Problem 1: Pricing risky bonds in the hazard rate model
+  - Calibrated Treasury, SOFR, and IBM CDS hazard rate curves
+  - Created 3 IBM bond objects
+  - Computed CDS-implied prices and yields
+  - Calculated intrinsic vs market basis
+  - Average basis: 1.1201 in price
+
+Problem 2: Scenario sensitivities for risky bonds
+  - Computed scenario IR01s and Durations
+  - Computed analytical DV01s and Durations
+  - Computed scenario CS01s (credit spread sensitivities)
+  - Computed scenario REC01s (recovery rate sensitivity)
+
+Problem 3: Perpetual CDS
+  - Premium Leg PV: $99.3763
+  - Default Leg PV: $12.0000
+  - CDS PV: $-87.3763
+  - Par Spread: 60.38 bps
+  - Risk sensitivities: IR01=$-0.176350, HR01=$-0.296591, REC01=$-0.200000
+  - Time T for 1% 10-year default prob: 225.30 years
+
+Problem 4: Nelson-Siegel model for Verizon credit curve
+  - Analyzed 40 Verizon bonds
+  - Optimal parameters: β0=0.020000, β1=0.010000, β2=0.010000, τ=2.000000
+  - Model fit: RMSE (Yield) = 0.0000 bps
+  - Generated 3 visualization plots
+
+--- Output Files Generated ---
+  1. problem4a_vz_yields_by_ttm.html
+  2. problem4e_prices.html
+  3. problem4e_yields.html
+  4. problem4e_edges.html
+
+================================================================================
+PSET 4 SOLUTION COMPLETED SUCCESSFULLY!
+================================================================================

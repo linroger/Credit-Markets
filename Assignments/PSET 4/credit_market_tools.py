@@ -239,19 +239,22 @@ def calibrate_cds_hazard_rate_curve(calc_date, sofr_yield_curve_handle, cds_par_
 
 def get_hazard_rates_df(hazard_rate_curve):
     '''Return dataframe with calibrated hazard rates and survival probabilities'''
-    
+
     CDS_day_count = ql.Actual360()
-    
-    hazard_list = [(hr[0].to_date(), 
-                CDS_day_count.yearFraction(calc_date, hr[0]),
+
+    # Use QuantLib's global evaluation date
+    ref_date = ql.Settings.instance().evaluationDate
+
+    hazard_list = [(hr[0].to_date(),
+                CDS_day_count.yearFraction(ref_date, hr[0]),
                 hr[1] * 1e4,
                 hazard_rate_curve.survivalProbability(hr[0])) for hr in hazard_rate_curve.nodes()]
 
     grid_dates, year_frac, hazard_rates, surv_probs = zip(*hazard_list)
 
-    hazard_rates_df = pd.DataFrame(data={'Date': grid_dates, 
+    hazard_rates_df = pd.DataFrame(data={'Date': grid_dates,
                                      'YearFrac': year_frac,
-                                     'HazardRateBps': hazard_rates,                                     
+                                     'HazardRateBps': hazard_rates,
                                      'SurvivalProb': surv_probs})
     return(hazard_rates_df)
 
